@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "XBk456HRmgzq7PlVOp8oLnkdIqURiPEWMZ8XAwl3xnPYWyRRSpiGUOzitlljwiVN9YHArb1noQUq2fbL1Js1xg==",
+  "success": true,
+  "projectFilePath": "/Users/thezippo/RiderProjects/Observability/Common.Shared/Common.Shared.csproj",
+  "expectedPackageFiles": [
+    "/Users/thezippo/.nuget/packages/microsoft.io.recyclablememorystream/2.3.2/microsoft.io.recyclablememorystream.2.3.2.nupkg.sha512"
+  ],
+  "logs": []
+}

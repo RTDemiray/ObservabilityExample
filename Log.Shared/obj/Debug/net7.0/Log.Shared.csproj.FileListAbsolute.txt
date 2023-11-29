@@ -1,0 +1,15 @@
+/Users/thezippo/RiderProjects/Observability/Log.Shared/bin/Debug/net7.0/Log.Shared.deps.json
+/Users/thezippo/RiderProjects/Observability/Log.Shared/bin/Debug/net7.0/Log.Shared.dll
+/Users/thezippo/RiderProjects/Observability/Log.Shared/bin/Debug/net7.0/Log.Shared.pdb
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.csproj.AssemblyReference.cache
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.GeneratedMSBuildEditorConfig.editorconfig
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.AssemblyInfoInputs.cache
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.AssemblyInfo.cs
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.csproj.CoreCompileInputs.cache
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.dll
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/refint/Log.Shared.dll
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.pdb
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/ref/Log.Shared.dll
+/Users/thezippo/RiderProjects/Observability/Log.Shared/bin/Debug/net7.0/OpenTelemetry.Shared.dll
+/Users/thezippo/RiderProjects/Observability/Log.Shared/bin/Debug/net7.0/OpenTelemetry.Shared.pdb
+/Users/thezippo/RiderProjects/Observability/Log.Shared/obj/Debug/net7.0/Log.Shared.csproj.CopyComplete

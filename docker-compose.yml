@@ -1,0 +1,148 @@
+version: '3.4'
+services:
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+    restart: on-failure
+    volumes:
+      - jaeger_volume:/etc/jaeger/jaeger-ui.json
+  postgres:
+    image: postgres:alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=OrderDb
+    restart: on-failure
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_volume:/var/lib/rabbitmq
+  elasticsearch:
+    image: elasticsearch:8.10.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=elastic
+    restart: on-failure
+    volumes:
+      - elastic_volume:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:8.10.2
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+    volumes:
+      - kibana_volume:/usr/share/kibana/data
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: on-failure
+    volumes:
+      - redis_volume:/data
+  order_api:
+    image: order_api
+    container_name: "order_api"
+    build:
+      context: .
+      dockerfile: Order.API/Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiServices:StockApi=http://stock_api
+      - Redis:Host=redis
+      - Elasticsearch:BaseUrl=http://elasticsearch:9200
+      - ConnectionStrings:DefaultConnection=UId=postgres;Pwd=123456;Server=postgres;Port=5432;Database=OrderDb;Integrated Security=true;Pooling=true
+      - OpenTelemetry:ServiceName=Order.API
+      - OpenTelemetry:ServiceVersion=1.0.0
+      - OpenTelemetry:ActivitySourceName=ActivitySource.Order.API
+      - OpenTelemetry:OtelCollectorBaseUrl=http://otel-collector:4317
+    restart: on-failure
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+      - elasticsearch
+      - kibana
+  stock_api:
+    image: stock_api
+    container_name: stock_api
+    build:
+      context: .
+      dockerfile: Stock.API/Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiServices:PaymentApi=http://payment_api
+      - Elasticsearch:BaseUrl=http://elasticsearch:9200
+      - OpenTelemetry:ServiceName=Stock.API
+      - OpenTelemetry:ServiceVersion=1.0.0
+      - OpenTelemetry:ActivitySourceName=ActivitySource.Stock.API
+      - OpenTelemetry:OtelCollectorBaseUrl=http://otel-collector:4317
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+      - elasticsearch
+      - kibana
+  payment_api:
+    image: payment_api
+    container_name: payment_api
+    build:
+      context: .
+      dockerfile: Payment.API/Dockerfile
+    ports:
+      - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Elasticsearch:BaseUrl=http://elasticsearch:9200
+      - OpenTelemetry:ServiceName=Payment.API
+      - OpenTelemetry:ServiceVersion=1.0.0
+      - OpenTelemetry:ActivitySourceName=ActivitySource.Payment.API
+      - OpenTelemetry:OtelCollectorBaseUrl=http://otel-collector:4317
+    restart: on-failure
+    depends_on: 
+      - elasticsearch
+      - kibana
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib-dev:latest
+    container_name: otel-collector
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"
+    restart: on-failure
+    depends_on:
+      - jaeger
+volumes:
+  jaeger_volume:
+  postgres_volume:
+  rabbitmq_volume:
+  elastic_volume:
+  kibana_volume:
+  redis_volume:

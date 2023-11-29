@@ -1,0 +1,33 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+processors:
+  batch:
+exporters:
+  otlp:
+    endpoint: "jaeger:4317"  # Jaeger collector endpoint
+    tls:
+      insecure: true  # Set to true if not using TLS
+  otlphttp:
+    endpoint: https://otlp.eu01.nr-data.net:4318 # New Relic endpoint
+    headers:
+      api-key: "eu01xx83783a310dd1cbbd0a03abcf3aFFFFNRAL" # New Relic api key
+extensions:
+  health_check:
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp, otlphttp]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp, otlphttp]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp, otlphttp]
